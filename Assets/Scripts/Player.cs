@@ -8,8 +8,8 @@ public class Player : MovingObject
 {
     public int wallDmg=1;
     public int atk=10;
-    public int HPperFood=10;
-    public int HPperSoda=20;
+    public int HPperFood=11;
+    public int HPperSoda=21;
     public float restartLevelDelay=1f;
     Animator animator;
     int HP;
@@ -44,12 +44,14 @@ public class Player : MovingObject
         {
             HP+=HPperFood;
             other.gameObject.SetActive(false);
+            showDetails(true,HPperFood);
             SoundManager.instance.RandomizeSfx(eat1,eat2);
         }
         else if(other.tag=="Soda")
         {
             HP+=HPperSoda;
             other.gameObject.SetActive(false);
+            showDetails(true,HPperSoda);
             SoundManager.instance.RandomizeSfx(drink1,drink2);
         }
         else if(other.tag=="Exit")
@@ -74,7 +76,7 @@ public class Player : MovingObject
        // {
         //    SoundManager.instance.RandomizeSfx(move1,move2);
         //}
-        
+        showDetails();
         CheckGameOver();
         //Debug.Log(HP);
         GameController.instance.playerTurn=false;
@@ -163,6 +165,10 @@ public class Player : MovingObject
     {
         HPText.text="HP: "+HP;
     }
+    void showDetails(bool add,int d)
+    {
+        HPText.text=add?("+"+d+" HP: "+HP):("-"+d+" HP: "+HP);
+    }
     int index=0;
     void Update()
     {
@@ -186,7 +192,7 @@ public class Player : MovingObject
             AttemptMove<Wall>(hor,ver);
         }
         //Debug.Log("Player Update end");
-        showDetails();
+        //showDetails();
         
     }
 }
