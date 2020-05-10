@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+    //public bool gameStart=false;
     public static GameController instance = null;
     [HideInInspector] public bool playerTurn=true;
     public float turnDelay=0.1f;
@@ -14,22 +15,36 @@ public class GameController : MonoBehaviour
     public int playerHP=30;
     List<Enemy> enemies;
     bool enemyMoving;
-    
-
     public float levelStartDelay=2f;
-    
     bool doingSetup;
     GameObject levelImage;
     Text levelText;
+    //bool gameStart=false;
+
+    //StartPage
+    StartPage startPage;
+    public GameObject playerOBJ;
+    public bool gameStart;
+
 
     void Start()
     {
         SceneManager.sceneLoaded += LevelWasLoaded;
     }
 
+    //Pressed start button, start game.
+    void StartGame()
+    {
+        
+    }
+
+
+
+
     void LevelWasLoaded(Scene scene,LoadSceneMode mode)
     {
         level++;
+        Debug.Log("Level: "+level);
         InitGame();
     }
     void UpDate()
@@ -40,12 +55,22 @@ public class GameController : MonoBehaviour
         StartCoroutine(MoveEnemys());
     }
 
+    //REQS
     public void MoveEnemyReq()
     {
         //Debug.Log("REQ");
         if(playerTurn||enemyMoving||doingSetup)
             return;
         StartCoroutine(MoveEnemys());   
+    }
+
+    public void StartGameReq()
+    {
+        gameStart=true;
+        startPage.gameObject.SetActive(false);
+        Destroy(startPage.gameObject);
+        Instantiate(playerOBJ);//Init Player
+        InitGame();
     }
 
     IEnumerator MoveEnemys()
@@ -73,6 +98,7 @@ public class GameController : MonoBehaviour
         if(instance==null)
         {
             instance = this;
+            GetStartPage();//init the start page object.
         }
         else if(instance!=null)
         {
@@ -82,7 +108,19 @@ public class GameController : MonoBehaviour
         enemies=new List<Enemy>();
         //Get instance of component 'GameManager'
         boardManager=GetComponent<BoardManager>();
-        InitGame();
+        //InitGame();
+        if(gameStart && startPage!=null)
+        {
+            startPage.gameObject.SetActive(false);
+        }
+    }
+
+    //get start page,do it when first init GM
+    void GetStartPage()
+    {
+        gameStart=false;
+        GameObject stpOBJ=GameObject.Find("StartPageCanvas");
+        if(stpOBJ!=null) startPage=stpOBJ.GetComponent<StartPage>();
     }
 
     public void GameOver()
@@ -96,18 +134,23 @@ public class GameController : MonoBehaviour
 
     void InitGame()
     {
+        Debug.Log("Init Game");
+        //gameStart=true;
         doingSetup=true;
         levelImage=GameObject.Find("LevelImage");
         levelText=GameObject.Find("LevelText").GetComponent<Text>();
         levelText.text="Day "+level;
         levelImage.SetActive(true);
         Invoke("HideLevelImage",levelStartDelay);
+        //HideLevelImage();
         boardManager.SetupScene(level);
         enemies.Clear();
+        //Debug.Log("GM HP: "+playerHP);
     }
 
     void HideLevelImage()
     {
+        Debug.Log("Hide LevelImage");
         levelImage.SetActive(false);
         doingSetup=false;
     }
