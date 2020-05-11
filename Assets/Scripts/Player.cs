@@ -46,6 +46,7 @@ public class Player : MovingObject
             other.gameObject.SetActive(false);
             showDetails(true,HPperFood);
             SoundManager.instance.RandomizeSfx(eat1,eat2);
+            showDetails(true,HPperFood);
         }
         else if(other.tag=="Soda")
         {
@@ -53,6 +54,7 @@ public class Player : MovingObject
             other.gameObject.SetActive(false);
             showDetails(true,HPperSoda);
             SoundManager.instance.RandomizeSfx(drink1,drink2);
+            showDetails(true,HPperSoda);
         }
         else if(other.tag=="Exit")
         {
@@ -67,21 +69,14 @@ public class Player : MovingObject
         //HPText.text="HP: "+HP;
         //bool loseHP;
         base.AttemptMove<T>(xdir,ydir);
-        //if(loseHP)
-        //{
-        //    HP--;
-        //}
-       // RaycastHit2D hit2D;
-       // if(base.canMove(xdir,ydir))
-       // {
-        //    SoundManager.instance.RandomizeSfx(move1,move2);
-        //}
-        showDetails();
+       
         CheckGameOver();
         //Debug.Log(HP);
         GameController.instance.playerTurn=false;
         //Debug.Log(GameController.instance.playerTurn);
         GameController.instance.MoveEnemyReq();
+        GameController.instance.playerHP=HP;
+        showDetails();
     }
 
 
@@ -89,14 +84,19 @@ public class Player : MovingObject
     {
         if(HP<=0)
         {
-            Debug.Log("died");
+            Debug.Log("Player died");
             SoundManager.instance.RandomizeSfx(gameoverSound);
             GameController.instance.GameOver();
             SoundManager.instance.musicSource.Stop();
-            this.enabled=false;
+            PlayerDied();
+            //this.enabled=false;
         }
     }
 
+    void PlayerDied()
+    {
+        Destroy(gameObject);
+    }
     void Restart()
     {
         SceneManager.LoadScene(0);
@@ -108,6 +108,7 @@ public class Player : MovingObject
         base.Start();
         HP=GameController.instance.playerHP;
         //HPText.text="HP: "+HP;
+        //HPText=GetComponentInChildren<Canvas>().GetComponentInChildren<Text>();
         showDetails();
     }
 
@@ -119,7 +120,7 @@ public class Player : MovingObject
 
     protected override void OnCantMove<T>(T component)
     {
-        Debug.Log("player cant move");
+        //Debug.Log("player cant move");
         Wall hitWall=component as Wall;
         if(hitWall!=null)
         {
@@ -163,25 +164,35 @@ public class Player : MovingObject
 
     void showDetails()
     {
-        HPText.text="HP: "+HP;
+        HPText.text="HP: "+HP.ToString();
     }
+
     void showDetails(bool add,int d)
     {
-        HPText.text=add?("+"+d+" HP: "+HP):("-"+d+" HP: "+HP);
+        //add HP
+        if(add==true)
+        {
+            HPText.text="+"+d.ToString()+" HP: "+HP.ToString();
+        }
+        else if(add==false)
+        {
+            HPText.text="-"+d.ToString()+" HP: "+HP.ToString();
+        }
     }
-    int index=0;
+    //int index=0;
     void Update()
     {
         //Debug.Log("Player Update");
         if(!GameController.instance.playerTurn)
             return;
-        
+
         int hor=0;
         int ver=0;
 
         hor=(int)Input.GetAxisRaw("Horizontal");
         ver=(int)Input.GetAxisRaw("Vertical");
 
+        //Debug.Log(hor.ToString()+ver.ToString());
         if(hor!=0)
             ver=0;
         if(hor!=0||ver!=0)
@@ -192,7 +203,11 @@ public class Player : MovingObject
             AttemptMove<Wall>(hor,ver);
         }
         //Debug.Log("Player Update end");
-        //showDetails();
-        
+    }
+
+    void Awake()
+    {
+        Debug.Log("Player inited");
+        HPText=GameObject.Find("HPText").GetComponent<Text>();
     }
 }
