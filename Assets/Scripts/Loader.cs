@@ -61,11 +61,11 @@ public class Loader : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log("Loader Awake");
+        //Debug.Log("Loader Awake");
         enabled=true;
         if(GameController.instance==null)
         {
-            Debug.Log("first GM");
+           // Debug.Log("first GM");
             Instantiate(gameManager);
         }
     }

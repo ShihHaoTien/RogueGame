@@ -29,19 +29,21 @@ public class BoardManager : MonoBehaviour
     public GameObject[] foodTiles;
     public GameObject[] enemyTiles;
 
-
+    Transform itemsHolder;
     Transform boardHolder;
     List<Vector3> gridPositions = new List<Vector3>();
-
+    GameObject tempExit;
 
     //Generate level
     public void SetupScene(int level)
     {
-       Debug.Log("Board Init Level "+level);
+        Debug.Log("Board Init Level "+level);
 
         BoardSetup();
+        itemsHolder=new GameObject("Items").transform;
         //Init exit
-        Instantiate(exitTile, new Vector3(col - 1, row - 1, 0f), Quaternion.identity);
+        tempExit=Instantiate(exitTile, new Vector3(col - 1, row - 1, 0f), Quaternion.identity);
+        tempExit.transform.SetParent(itemsHolder);
         //Init random wall, food and enemy
         InitGridList();
         InitRandomObject(wallTiles, wallCount.min, wallCount.max);
@@ -65,6 +67,13 @@ public class BoardManager : MonoBehaviour
                 instance.transform.SetParent(boardHolder);
             }
         }
+    }
+
+    public void DeleteBoard()
+    {
+        Destroy(boardHolder.gameObject);
+        Destroy(itemsHolder.gameObject);
+        //Destroy(exitTile);
     }
 
     //Init Grid List
@@ -100,7 +109,8 @@ public class BoardManager : MonoBehaviour
         {
             Vector3 pos = RandomPosition();
             GameObject tileChoice = tileArray[UnityEngine.Random.Range(0, tileArray.Length)];
-            Instantiate(tileChoice, pos, Quaternion.identity);
+            tileChoice=Instantiate(tileChoice, pos, Quaternion.identity);
+            tileChoice.transform.SetParent(itemsHolder);
         }
     }
 }

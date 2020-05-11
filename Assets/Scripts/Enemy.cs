@@ -24,9 +24,6 @@ public class Enemy : MovingObject
         //bloodBar.transform.position=this.transform.position;
         bloodBar.maxValue=HP;
         bloodBar.value=HP;
-        //Debug.Log("this: "+this.transform.position+"Bar: "+bloodBar.transform.position);
-        //Debug.Log(bloodBar.slider.maxValue);
-        //Debug.Log("mas:"+bloodBar.master.transform.position.x+" this: "+this.transform.position.x);
         base.Start();
     }
 
@@ -39,17 +36,22 @@ public class Enemy : MovingObject
 
     public void MoveEnemy()
     {
-        int xdir=0;
-        int ydir=0;
-        //Same x, move at y axis
-        if(Mathf.Abs(target.position.x-transform.position.x)<float.Epsilon)
+        //target=GameObject.FindGameObjectWithTag("Player").transform;
+        if(target!=null)
         {
-            ydir=target.position.y>transform.position.y?1:-1;
+            int xdir=0;
+            int ydir=0;
+            //Same x, move at y axis
+            if(Mathf.Abs(target.position.x-transform.position.x)<float.Epsilon)
+            {
+                ydir=target.position.y>transform.position.y?1:-1;
+            }
+            //same y, move at x axis
+            else xdir=target.position.x>transform.position.x?1:-1;
+            AttemptMove<Player>(xdir,ydir);
+            enemyCanvas.UpdatePosition();
         }
-        //same y, move at x axis
-        else xdir=target.position.x>transform.position.x?1:-1;
-        AttemptMove<Player>(xdir,ydir);
-        enemyCanvas.UpdatePosition();
+       
     }
 
     protected override void AttemptMove<T>(int xdir, int ydir)

@@ -13,18 +13,24 @@ public class GameController : MonoBehaviour
     BoardManager boardManager;
     int level=1;
     public int playerHP=30;
+    public int startHP=30;
     List<Enemy> enemies;
     bool enemyMoving;
     public float levelStartDelay=2f;
     bool doingSetup;
     GameObject levelImage;
     Text levelText;
+    CanvasManager canvasManager;
     //bool gameStart=false;
 
     //StartPage
     StartPage startPage;
     public GameObject playerOBJ;
     public bool gameStart;
+    
+
+    //Game Over Page
+    public Button backBtn;
 
 
     void Start()
@@ -44,7 +50,7 @@ public class GameController : MonoBehaviour
     void LevelWasLoaded(Scene scene,LoadSceneMode mode)
     {
         level++;
-        Debug.Log("Level: "+level);
+        //Debug.Log("Level: "+level);
         InitGame();
     }
     void UpDate()
@@ -55,7 +61,9 @@ public class GameController : MonoBehaviour
         StartCoroutine(MoveEnemys());
     }
 
-    //REQS
+    /*============================
+    *REQUESTS BEGIN
+    *============================*/
     public void MoveEnemyReq()
     {
         //Debug.Log("REQ");
@@ -66,13 +74,44 @@ public class GameController : MonoBehaviour
 
     public void StartGameReq()
     {
+        if(startPage==null)
+        {
+            GetStartPage();
+        }
         gameStart=true;
-        startPage.gameObject.SetActive(false);
-        Destroy(startPage.gameObject);
-        Instantiate(playerOBJ);//Init Player
+        if(startPage!=null) startPage.gameObject.SetActive(false);
+        //Destroy(startPage.gameObject);
+        //Instantiate(playerOBJ);//Init Player
+        level=1;
+        playerHP=startHP;
+        Debug.Log("Now start game");
         InitGame();
     }
 
+    public void GoBackStartPageReq()
+    {
+        GetStartPage();
+        //Debug.Log("GM:"+startPage);
+        gameStart=false;
+        startPage.gameObject.SetActive(true);
+        levelText.text="";
+        //SceneManager.LoadScene(0);
+        SoundManager.instance.musicSource.Play();
+        //Destroy(boardManager.gameObject);
+        boardManager.DeleteBoard();
+
+        enemies.Clear();
+    }
+
+    //Get current startpage from CanvasManager
+    public void UpdateStartPageReq(StartPage ss)
+    {
+        startPage=ss;
+    }
+    
+    /*============================
+    *REQUESTS END
+    *============================*/
     IEnumerator MoveEnemys()
     {
         enemyMoving=true;
@@ -99,6 +138,7 @@ public class GameController : MonoBehaviour
         {
             instance = this;
             GetStartPage();//init the start page object.
+            startHP=playerHP;
         }
         else if(instance!=null)
         {
@@ -113,29 +153,45 @@ public class GameController : MonoBehaviour
         {
             startPage.gameObject.SetActive(false);
         }
+        canvasManager=GameObject.Find("Canvas").GetComponent<CanvasManager>();
     }
 
     //get start page,do it when first init GM
     void GetStartPage()
     {
         gameStart=false;
-        GameObject stpOBJ=GameObject.Find("StartPageCanvas");
+        GameObject stpOBJ=GameObject.FindWithTag("StartPage");
         if(stpOBJ!=null) startPage=stpOBJ.GetComponent<StartPage>();
     }
 
     public void GameOver()
     {
-        Debug.Log("GM DIED");
+        Debug.Log("GM Game over");
         //base.enabled=false;
         levelText.text="You Survived "+level+" days";
         levelImage.SetActive(true);
-        base.enabled=false;
+        //base.enabled=false;
+        canvasManager.ShowBackBtn();
+        SaveData();
+    }
+
+    void SaveData()
+    {
+        if(level>PlayerPrefs.GetInt("DaysRecord",level))
+        {
+            PlayerPrefs.SetInt("DaysRecord",level);
+        }
+    }
+    void GetObjects()
+    {
+        canvasManager=GameObject.Find("Canvas").GetComponent<CanvasManager>();
     }
 
     void InitGame()
     {
         Debug.Log("Init Game");
         //gameStart=true;
+        GetObjects();
         doingSetup=true;
         levelImage=GameObject.Find("LevelImage");
         levelText=GameObject.Find("LevelText").GetComponent<Text>();
@@ -145,12 +201,14 @@ public class GameController : MonoBehaviour
         //HideLevelImage();
         boardManager.SetupScene(level);
         enemies.Clear();
+        //InitPlayer
+        Instantiate(playerOBJ);
         //Debug.Log("GM HP: "+playerHP);
     }
 
     void HideLevelImage()
     {
-        Debug.Log("Hide LevelImage");
+        //Debug.Log("Hide LevelImage");
         levelImage.SetActive(false);
         doingSetup=false;
     }

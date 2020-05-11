@@ -67,16 +67,7 @@ public class Player : MovingObject
         //HPText.text="HP: "+HP;
         //bool loseHP;
         base.AttemptMove<T>(xdir,ydir);
-        //if(loseHP)
-        //{
-        //    HP--;
-        //}
-       // RaycastHit2D hit2D;
-       // if(base.canMove(xdir,ydir))
-       // {
-        //    SoundManager.instance.RandomizeSfx(move1,move2);
-        //}
-        
+       
         CheckGameOver();
         //Debug.Log(HP);
         GameController.instance.playerTurn=false;
@@ -91,14 +82,19 @@ public class Player : MovingObject
     {
         if(HP<=0)
         {
-            Debug.Log("died");
+            Debug.Log("Player died");
             SoundManager.instance.RandomizeSfx(gameoverSound);
             GameController.instance.GameOver();
             SoundManager.instance.musicSource.Stop();
-            this.enabled=false;
+            PlayerDied();
+            //this.enabled=false;
         }
     }
 
+    void PlayerDied()
+    {
+        Destroy(gameObject);
+    }
     void Restart()
     {
         SceneManager.LoadScene(0);

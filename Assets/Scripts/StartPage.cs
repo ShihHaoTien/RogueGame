@@ -10,14 +10,16 @@ public class StartPage : MonoBehaviour
     public Button recordBtn;
     public Button exitBtn;
     [HideInInspector] public bool gameStart;
-
+    bool showingRecord;
 
     public void StartBtnClick()
     {
-        //gameObject.SetActive(false);
+        
         //Debug.Log("clicked");
         GameController.instance.StartGameReq();
         gameStart=true;
+        gameObject.SetActive(false);
+        //Destroy(gameObject);
         //this.gameObject.SetActive(false);
     }
 
@@ -33,7 +35,17 @@ public class StartPage : MonoBehaviour
 
     public void RecordBtnClick()
     {
-        return;
+        if(showingRecord==false)
+        {
+            int rcd=PlayerPrefs.GetInt("DaysRecord",0);
+            recordBtn.GetComponentInChildren<Text>().text=rcd.ToString()+" days";
+            showingRecord=true;
+        }
+        else
+        {
+            recordBtn.GetComponentInChildren<Text>().text="Record";
+            showingRecord=false;
+        }
     }
     
     // Start is called before the first frame update
@@ -42,6 +54,7 @@ public class StartPage : MonoBehaviour
         startBtn.onClick.AddListener(StartBtnClick);
         exitBtn.onClick.AddListener(ExitBtnClick);
         recordBtn.onClick.AddListener(RecordBtnClick);
+        showingRecord=false;
     }
 
     // Update is called once per frame
