@@ -27,7 +27,7 @@ public class GameController : MonoBehaviour
     StartPage startPage;
     public GameObject playerOBJ;
     public bool gameStart;
-    
+    GameObject tempPlayer;
 
     //Game Over Page
     public Button backBtn;
@@ -107,6 +107,12 @@ public class GameController : MonoBehaviour
     public void UpdateStartPageReq(StartPage ss)
     {
         startPage=ss;
+    }
+
+    public void AddHPReq(int add)
+    {
+        playerHP=playerHP+add;
+        tempPlayer.GetComponent<Player>().RecieveFromGM();
     }
     
     /*============================
@@ -202,7 +208,7 @@ public class GameController : MonoBehaviour
         boardManager.SetupScene(level);
         enemies.Clear();
         //InitPlayer
-        Instantiate(playerOBJ);
+        tempPlayer=Instantiate(playerOBJ);
         //Debug.Log("GM HP: "+playerHP);
     }
 

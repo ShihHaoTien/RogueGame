@@ -12,7 +12,7 @@ public class Player : MovingObject
     public int HPperSoda=21;
     public float restartLevelDelay=1f;
     Animator animator;
-    int HP;
+    public int HP;
     public Text HPText;
     public AudioClip move1;
     public AudioClip move2;
@@ -75,7 +75,7 @@ public class Player : MovingObject
         GameController.instance.playerTurn=false;
         //Debug.Log(GameController.instance.playerTurn);
         GameController.instance.MoveEnemyReq();
-        GameController.instance.playerHP=HP;
+        //GameController.instance.playerHP=HP;
         showDetails();
     }
 
@@ -164,7 +164,9 @@ public class Player : MovingObject
 
     void showDetails()
     {
+        //Debug.Log(HPText.name);
         HPText.text="HP: "+HP.ToString();
+        GameController.instance.playerHP=HP;
     }
 
     void showDetails(bool add,int d)
@@ -178,6 +180,7 @@ public class Player : MovingObject
         {
             HPText.text="-"+d.ToString()+" HP: "+HP.ToString();
         }
+        GameController.instance.playerHP=HP;
     }
     //int index=0;
     void Update()
@@ -203,6 +206,13 @@ public class Player : MovingObject
             AttemptMove<Wall>(hor,ver);
         }
         //Debug.Log("Player Update end");
+    }
+
+    public void RecieveFromGM()
+    {
+        HP=GameController.instance.playerHP;
+        showDetails(true,30);
+        //showDetails();
     }
 
     void Awake()
