@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
     public float turnDelay=0.1f;
     BoardManager boardManager;
     int level=1;
-    public int playerHP=30;
+    //public int playerHP=30;
     public int startHP=30;
     List<Enemy> enemies;
     bool enemyMoving;
@@ -28,24 +28,47 @@ public class GameController : MonoBehaviour
     public GameObject playerOBJ;
     public bool gameStart;
     GameObject tempPlayer;
-
     //Game Over Page
     public Button backBtn;
+
+    //Used in GM, to save Player's data when change scene.
+    public class PlayerStatics
+    {
+        GameObject obj;
+        Player script;
+        public int HP;
+        public bool invinState;
+        public int invinDistance;
+
+        public PlayerStatics(GameObject playerOBJ)
+        {
+            obj=playerOBJ;
+            script=playerOBJ.GetComponent<Player>();
+            HP=script.HP;
+            invinState=script.invincible;
+            invinDistance=script.invinDistance;
+        }
+
+        public void SaveData(GameObject playerOBJ)
+        {
+            obj=playerOBJ;
+            script=playerOBJ.GetComponent<Player>();
+            HP=script.HP;
+            invinState=script.invincible;
+            invinDistance=script.invinDistance;
+        }
+    }
+    [HideInInspector] public PlayerStatics player;
+    public bool firstInitPlayer;
+
+
+
 
 
     void Start()
     {
         SceneManager.sceneLoaded += LevelWasLoaded;
     }
-
-    //Pressed start button, start game.
-    void StartGame()
-    {
-        
-    }
-
-
-
 
     void LevelWasLoaded(Scene scene,LoadSceneMode mode)
     {
@@ -83,9 +106,11 @@ public class GameController : MonoBehaviour
         //Destroy(startPage.gameObject);
         //Instantiate(playerOBJ);//Init Player
         level=1;
-        playerHP=startHP;
+        if(player!=null) player.HP=startHP;
+        //player.HP=startHP;
         Debug.Log("Now start game");
         InitGame();
+        
     }
 
     public void GoBackStartPageReq()
@@ -111,8 +136,25 @@ public class GameController : MonoBehaviour
 
     public void AddHPReq(int add)
     {
-        playerHP=playerHP+add;
+        player.HP=player.HP+add;
         tempPlayer.GetComponent<Player>().RecieveFromGM();
+    }
+
+    public void MakePlayerInvinReq(int distance)
+    {
+        tempPlayer.GetComponent<Player>().GetInvincible(distance);
+    }
+
+    public void DropPotionReq(Vector3 pos)
+    {
+        boardManager.AddOnePotion(pos);
+    }
+
+    //Player call when player disabled
+    //Save current data and send it to new player
+    public void GetPlayerDataReq(GameObject obj)
+    {
+        player.SaveData(obj);
     }
     
     /*============================
@@ -144,7 +186,8 @@ public class GameController : MonoBehaviour
         {
             instance = this;
             GetStartPage();//init the start page object.
-            startHP=playerHP;
+            //player=new PlayerStatics(tempPlayer);
+            firstInitPlayer=true;
         }
         else if(instance!=null)
         {
@@ -209,6 +252,14 @@ public class GameController : MonoBehaviour
         enemies.Clear();
         //InitPlayer
         tempPlayer=Instantiate(playerOBJ);
+        //Init Player Data Manager
+        if(firstInitPlayer==true)
+        {
+            Debug.Log("create player class");
+            player=new PlayerStatics(tempPlayer);
+            firstInitPlayer=false;
+            player.HP=startHP;
+        }
         //Debug.Log("GM HP: "+playerHP);
     }
 

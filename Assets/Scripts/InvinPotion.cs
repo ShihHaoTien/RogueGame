@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InvinPotion : MonoBehaviour
+public class InvinPotion : Potions
 {
-    // Start is called before the first frame update
-    void Start()
+    public int invinDist=10;
+    
+    protected override void PotionPayload()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        base.PotionPayload();
+        Debug.Log("INVINCIBLE!");
+        GameController.instance.MakePlayerInvinReq(invinDist);
     }
 }

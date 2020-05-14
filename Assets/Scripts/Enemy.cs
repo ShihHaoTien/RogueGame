@@ -11,7 +11,9 @@ public class Enemy : MovingObject
     //public BloodBar bloodBar;
     Slider bloodBar;
     EnemyCanvas enemyCanvas;
+    
     public int HP;
+    public float dropProbability=0.5f;
     //Init
     protected override void Start()
     {
@@ -86,6 +88,13 @@ public class Enemy : MovingObject
         bloodBar.value=HP;
         if(HP<=0)
         {
+            //drop potion
+            int r=UnityEngine.Random.Range(0,100);
+            Debug.Log(r);
+            if(r<100*dropProbability)
+            {
+                GameController.instance.DropPotionReq(gameObject.transform.position);
+            }
             gameObject.SetActive(false);
             GameController.instance.RemoveEnemy(this);
         }

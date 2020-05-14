@@ -27,14 +27,19 @@ public class Player : MovingObject
     int xdir;
     int ydir;
 
-
+    //Invincible
+    [HideInInspector] public bool invincible;
+    [HideInInspector] public int invinDistance;
 
     //get hit lose HP
     public void LoseHP(int loss)
     {
-        animator.SetTrigger("playerHit");
-        HP-=loss;
-        CheckGameOver();
+        if(invincible==false)
+        {
+            animator.SetTrigger("playerHit");
+            HP-=loss;
+            CheckGameOver();
+        }
     }
 
     //detection collider TAG
@@ -65,11 +70,10 @@ public class Player : MovingObject
 
     protected override void AttemptMove<T>(int xdir, int ydir)
     {
-        HP--;
-        //HPText.text="HP: "+HP;
-        //bool loseHP;
+        if(invincible==false) {HP--;}
+        //If move, invindistance sub 1. But if cant move, shall add 1. 
         base.AttemptMove<T>(xdir,ydir);
-       
+        if(invincible==true) invinDistance-=1;
         CheckGameOver();
         //Debug.Log(HP);
         GameController.instance.playerTurn=false;
@@ -77,6 +81,7 @@ public class Player : MovingObject
         GameController.instance.MoveEnemyReq();
         //GameController.instance.playerHP=HP;
         showDetails();
+        //Debug.Log(invinDistance);
     }
 
 
@@ -104,18 +109,29 @@ public class Player : MovingObject
 
     protected override void Start()
     {
+        invincible=false;
+        invinDistance=0;
         animator=GetComponent<Animator>();
         base.Start();
-        HP=GameController.instance.playerHP;
+        GetDataFromGM();
+        //HP=GameController.instance.playerHP;
         //HPText.text="HP: "+HP;
         //HPText=GetComponentInChildren<Canvas>().GetComponentInChildren<Text>();
         showDetails();
     }
 
+    void GetDataFromGM()
+    {
+        HP=GameController.instance.player.HP;
+        invincible=GameController.instance.player.invinState;
+        invinDistance=GameController.instance.player.invinDistance;
+    }
+
     //return HP now
     void OnDisable()
     {
-        GameController.instance.playerHP=HP;
+        //GameController.instance.playerHP=HP;
+        GameController.instance.GetPlayerDataReq(gameObject);
     }
 
     protected override void OnCantMove<T>(T component)
@@ -131,12 +147,13 @@ public class Player : MovingObject
         else if(hitWall==null)
         {
             //Debug.Log("edge!!");
-            HP++;
+            if(invincible==false) {HP++;}
             //HPText.text="HP: "+HP;
         }
         //check whether attack enemy
         HitEnemy();
-
+        //Cant move then add invin distance
+        if(invincible==true) invinDistance+=1;
     }
 
     void HitEnemy()
@@ -153,7 +170,10 @@ public class Player : MovingObject
         if(!canMove&&hitComponent!=null)
         {
             //attack enemy
-            HP--;
+            if(!invincible)
+            {
+                HP--;
+            }
             //Debug.Log("Atk Enemy");
             hitComponent.GetAttack(this.atk);
             animator.SetTrigger("playerChop");
@@ -166,7 +186,8 @@ public class Player : MovingObject
     {
         //Debug.Log(HPText.name);
         HPText.text="HP: "+HP.ToString();
-        GameController.instance.playerHP=HP;
+        //GameController.instance.playerHP=HP;
+        GameController.instance.GetPlayerDataReq(gameObject);
     }
 
     void showDetails(bool add,int d)
@@ -180,7 +201,8 @@ public class Player : MovingObject
         {
             HPText.text="-"+d.ToString()+" HP: "+HP.ToString();
         }
-        GameController.instance.playerHP=HP;
+        //GameController.instance.playerHP=HP;
+        GameController.instance.GetPlayerDataReq(gameObject);
     }
     //int index=0;
     void Update()
@@ -205,15 +227,27 @@ public class Player : MovingObject
            // GameController.instance.playerTurn=false;
             AttemptMove<Wall>(hor,ver);
         }
-        //Debug.Log("Player Update end");
+        //End invincible state
+        if(invinDistance<=0) 
+        {
+            invincible=false;
+        }
     }
 
     public void RecieveFromGM()
     {
-        HP=GameController.instance.playerHP;
+        //HP=GameController.instance.playerHP;
+        GetDataFromGM();
         showDetails(true,30);
         //showDetails();
     }
+
+    public void GetInvincible(int distance)
+    {
+        invinDistance=invinDistance+distance;
+        invincible=true;
+    }
+
 
     void Awake()
     {

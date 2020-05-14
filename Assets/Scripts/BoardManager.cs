@@ -28,7 +28,7 @@ public class BoardManager : MonoBehaviour
     public GameObject[] wallTiles;
     public GameObject[] foodTiles;
     public GameObject[] enemyTiles;
-
+    public GameObject[] potionTiles;
     Transform itemsHolder;
     Transform boardHolder;
     List<Vector3> gridPositions = new List<Vector3>();
@@ -112,5 +112,12 @@ public class BoardManager : MonoBehaviour
             tileChoice=Instantiate(tileChoice, pos, Quaternion.identity);
             tileChoice.transform.SetParent(itemsHolder);
         }
+    }
+
+    public void AddOnePotion(Vector3 pos)
+    {
+        GameObject tileChoice = potionTiles[UnityEngine.Random.Range(0, potionTiles.Length)];
+        tileChoice=Instantiate(tileChoice, pos, Quaternion.identity);
+        tileChoice.transform.SetParent(itemsHolder);
     }
 }
