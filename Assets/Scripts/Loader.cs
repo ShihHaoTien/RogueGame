@@ -58,7 +58,7 @@ using UnityEngine;
 public class Loader : MonoBehaviour
 {
     public GameObject gameManager;
-
+    float speed=10f;
     void Awake()
     {
         //Debug.Log("Loader Awake");
@@ -68,6 +68,32 @@ public class Loader : MonoBehaviour
            // Debug.Log("first GM");
             Instantiate(gameManager);
         }
+    }
+
+    void Update()
+    {   
+        if(GameController.instance!=null &&
+         GameController.instance.gameStart==true && 
+         GameController.instance.player!=null &&
+         GameController.instance.player.obj!=null)
+        {
+            gameObject.transform.position=GameController.instance.player.obj.transform.position+new Vector3(0,0,-1);
+            //StartCoroutine(Smoothmove(GameController.instance.player.obj.transform.position+new Vector3(0,0,-1))); 
+        }
+        
+    }
+
+    protected IEnumerator Smoothmove(Vector3 end)
+    {
+        float sqrRemainDist=(transform.position-end).sqrMagnitude;
+        while(sqrRemainDist>float.Epsilon)
+        {
+            Vector3 newPos=Vector3.MoveTowards(gameObject.transform.position,end,speed*Time.deltaTime);
+            gameObject.transform.position=newPos;
+            sqrRemainDist=(transform.position-end).sqrMagnitude;
+            yield return null;//stop program till next frame
+        }
+       // GameController.instance.playerTurn=true;
     }
 }
 

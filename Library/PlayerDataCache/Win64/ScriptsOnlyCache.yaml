@@ -2,13 +2,23 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - BoardManager
+    - CanvasManager
     - Enemy
     - EnemyCanvas
     - GameController
+    - HealthPotion
+    - InvinPotion
     - Loader
     - Player
     - SoundManager
+    - StartPage
     - Wall
+    UnityEditor.Graphs.dll:
+    - UnityEditor.Graphs.AnimationBlendTree.Graph
+    - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.Graph
+    - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.TestListCacheData
     UnityEngine.UI.dll:
@@ -21,7 +31,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Slider
     - UnityEngine.UI.Text
   sceneClasses:
-    Assets/Scences/demo1.0.unity:
+    Assets/Scenes/SampleScene.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -53,35 +63,43 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 9360}
+      Script: {instanceID: 9350}
     - Class: 114
-      Script: {instanceID: 9428}
+      Script: {instanceID: 9392}
     - Class: 114
-      Script: {instanceID: 9446}
+      Script: {instanceID: 9402}
+    - Class: 114
+      Script: {instanceID: 9422}
+    - Class: 114
+      Script: {instanceID: 9440}
+    - Class: 114
+      Script: {instanceID: 9442}
     - Class: 114
       Script: {instanceID: 9448}
     - Class: 114
       Script: {instanceID: 9454}
     - Class: 114
-      Script: {instanceID: 9460}
+      Script: {instanceID: 9462}
     - Class: 114
-      Script: {instanceID: 9468}
+      Script: {instanceID: 9496}
     - Class: 114
-      Script: {instanceID: 9502}
+      Script: {instanceID: 9498}
     - Class: 114
-      Script: {instanceID: 9504}
+      Script: {instanceID: 9500}
     - Class: 114
-      Script: {instanceID: 9506}
+      Script: {instanceID: 9518}
     - Class: 114
-      Script: {instanceID: 9524}
+      Script: {instanceID: 9668}
     - Class: 114
-      Script: {instanceID: 9674}
+      Script: {instanceID: 9808}
     - Class: 114
-      Script: {instanceID: 10024}
+      Script: {instanceID: 10020}
     - Class: 114
-      Script: {instanceID: 10032}
+      Script: {instanceID: 10028}
     - Class: 114
-      Script: {instanceID: 10248}
+      Script: {instanceID: 10244}
+    - Class: 114
+      Script: {instanceID: 10656}
     - Class: 114
       Script: {instanceID: 10680}
     - Class: 115
@@ -123,7 +141,7 @@ ScriptsOnlyBuild:
     className: TMP_Dropdown
   - hash:
       serializedVersion: 2
-      Hash: 1196851c37db2f432e8a28343fd7e8aa
+      Hash: 9deed15dff9b6fe48d40d760ad559d16
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -147,10 +165,22 @@ ScriptsOnlyBuild:
     className: GroupTrack
   - hash:
       serializedVersion: 2
+      Hash: b4b66e4cf1ccbf9f483fda3d09c8b983
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CanvasManager
+  - hash:
+      serializedVersion: 2
       Hash: a5781dc71a671b1ad2b38de19f24b71f
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: ActivationTrack
+  - hash:
+      serializedVersion: 2
+      Hash: cf671310303aab10e6119f6ba813a268
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: InvinPotion
   - hash:
       serializedVersion: 2
       Hash: 4d46e584f2c31862bda0af57f01f4f81
@@ -351,7 +381,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 42596ba3f004ced9476374c0adc1fa88
+      Hash: f4840b8b7302424aed97a1485c595d4d
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameController
@@ -561,7 +591,7 @@ ScriptsOnlyBuild:
     className: SignalAsset
   - hash:
       serializedVersion: 2
-      Hash: e228c42d5a02f9443da65897907a44dd
+      Hash: 5a000cf51bc8e6dadf4c0118eac52fcc
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BoardManager
@@ -601,6 +631,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Analytics.Tracker.dll
     namespaceName: UnityEngine.Analytics
     className: AnalyticsTracker
+  - hash:
+      serializedVersion: 2
+      Hash: cb92e1268b88bd5ef5a4a3bab0804437
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: StartPage
   - hash:
       serializedVersion: 2
       Hash: 0fb27be807aa299702f28ad0bcad1f46
@@ -1029,7 +1065,7 @@ ScriptsOnlyBuild:
     className: WireframeTrackableEventHandler
   - hash:
       serializedVersion: 2
-      Hash: 141e5ab7b216b6a156f04e40580ee434
+      Hash: 3472de02aca506d14d3609ae3e715679
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Enemy
@@ -1171,6 +1207,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: MarkerTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 67d182c847ce5d82db1ae75c941bbc27
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: HealthPotion
   - hash:
       serializedVersion: 2
       Hash: d791aa6007fa3640be1164ea75bb087d
@@ -1627,19 +1669,7 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: b4b66e4cf1ccbf9f483fda3d09c8b983
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: CanvasManager
-  - hash:
-      serializedVersion: 2
-      Hash: cb92e1268b88bd5ef5a4a3bab0804437
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: StartPage
   platform: 19
   scenePathNames:
-  - Assets/Scences/demo1.0.unity
-  playerPath: D:/MyGit/Rogue/Release/0.0.3/Rogue.exe
+  - Assets/Scenes/SampleScene.unity
+  playerPath: D:/MyGit/Rogue/Release/0.0.4/Rogue.exe

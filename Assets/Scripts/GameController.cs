@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour
     //Used in GM, to save Player's data when change scene.
     public class PlayerStatics
     {
-        GameObject obj;
+        public GameObject obj;
         Player script;
         public int HP;
         public bool invinState;
@@ -60,7 +60,8 @@ public class GameController : MonoBehaviour
     }
     [HideInInspector] public PlayerStatics player;
     public bool firstInitPlayer;
-
+    int playerStartX;
+    int playerStartY;
 
 
 
@@ -156,6 +157,12 @@ public class GameController : MonoBehaviour
     {
         player.SaveData(obj);
     }
+
+    public void SetPlayerPositon(int x,int y)
+    {
+        playerStartX=x;
+        playerStartY=y;
+    }
     
     /*============================
     *REQUESTS END
@@ -229,6 +236,7 @@ public class GameController : MonoBehaviour
         if(level>PlayerPrefs.GetInt("DaysRecord",level))
         {
             PlayerPrefs.SetInt("DaysRecord",level);
+            PlayerPrefs.Save();
         }
     }
     void GetObjects()
@@ -252,6 +260,7 @@ public class GameController : MonoBehaviour
         enemies.Clear();
         //InitPlayer
         tempPlayer=Instantiate(playerOBJ);
+        tempPlayer.gameObject.transform.position=new Vector3(playerStartX,playerStartY,0);
         //Init Player Data Manager
         if(firstInitPlayer==true)
         {

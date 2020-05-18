@@ -42,16 +42,15 @@ public abstract class MovingObject : MonoBehaviour
         Vector2 start=transform.position;
         Vector2 end=start+new Vector2(xdir,ydir);
         
-
         boxCollider.enabled=false;
         hit=Physics2D.Linecast(start,end,blockingLayer);
         boxCollider.enabled=true;
 
-        if(end.x<0 || end.x>7 || end.y>7 ||end.y<0)
+        /*if(end.x<0 || end.x>7 || end.y>7 ||end.y<0)
         {
 
             return false;
-        }
+        }*/
 
         if(hit.transform==null)
         {
